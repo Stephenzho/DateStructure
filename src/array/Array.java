@@ -1,4 +1,4 @@
-package Array;
+package array;
 
 
 /**
@@ -17,15 +17,22 @@ public class Array<T> {
 
     public T get(int index) {
 
-        if (index <= 0 || index >= size) {
+        if (index < 0 || index >= size) {
             throw new IllegalArgumentException("Get failed. Index is illegal.");
         }
 
         return data[index];
     }
 
+    public T getLast() {
+        return get(size - 1);
+    }
+
+    public T getFirst() {
+        return get(0);
+    }
     public void set(int index,T e){
-        if (index <= 0 || index >= size) {
+        if (index < 0 || index >= size) {
             throw new IllegalArgumentException("Get failed. Index is illegal.");
         }
 
@@ -131,7 +138,9 @@ public class Array<T> {
     public void addFirst(T e) {
         this.add(0, e);
     }
-
+    public void addLast(T e){
+        this.add(size, e);
+    }
     public void add(T e) {
         this.add(size , e);
     }
@@ -178,7 +187,7 @@ public class Array<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(String.format("Array: size = %d, capacity = %d\n", size, data.length));
+        sb.append(String.format("array: size = %d, capacity = %d\n", size, data.length));
         sb.append("[");
 
         for (int i = 0; i < size; i++) {
