@@ -83,10 +83,40 @@ public class LinkedList<E> {
         return prev.e;
     }
 
+    // 获得链表的第一个元素
+    public E getFirst(){
+        return get(0);
+    }
+
+
+    public E remove(int index) {
+        if (index < 0 || index > size) {
+            throw new IllegalArgumentException("Get failed. Illegal index.");
+        }
+
+        Node prve = dummyHead;
+        for (int i = 0; i < index; i++) {
+            prve = prve.next;
+        }
+
+        Node indexNode = prve.next;
+        prve.next = indexNode.next;
+        indexNode.next = null;
+
+        size--;
+        return (E) indexNode.e;
+    }
+
+    public E removeLast(){
+        return remove(size-1);
+    }
+    public E removeFirst(){
+        return remove(0);
+    }
+
+
     public boolean contains(E e) {
-
         Node<E> prev = dummyHead.next;
-
         do {
             if (prev.e.equals(e)) {
                 return true;
@@ -94,7 +124,6 @@ public class LinkedList<E> {
 
             prev = prev.next;
         } while (prev != null);
-
 
         return false;
     }
