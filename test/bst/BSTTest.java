@@ -26,8 +26,11 @@ public class BSTTest {
         }
 
 
-        System.out.println(bst);
+        bst.inOrder();
 
+        System.out.println("\n");
+
+        bst.postOrder();
     }
 
 

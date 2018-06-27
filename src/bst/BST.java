@@ -80,19 +80,36 @@ public class BST<E extends Comparable<E>> {
     }
 
 
-    public void preOrder() {
-        preOrder(root);
+    public void order() {
+        order(root,0);
     }
 
-    private void preOrder(Node node) {
+    public void inOrder() {
+        order(root, 1);
+    }
+    public void postOrder(){
+        order(root, 2);
+    }
+
+    private void order(Node node,int i) {
         if (node == null) {
             return;
         }
+        if (i == 0) {
+            System.out.println(node);
+        }
 
-        System.out.println(node);
+        order(node.left, i);
 
-        preOrder(node.left);
-        preOrder(node.right);
+        if (i == 1) {
+            System.out.println(node);
+        }
+
+        order(node.right, i);
+
+        if (i == 2) {
+            System.out.println(node);
+        }
     }
 
     public int size(){
@@ -103,15 +120,14 @@ public class BST<E extends Comparable<E>> {
         return size == 0;
     }
 
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        return order(root, 0, sb).toString();
+        return print(root, 0, sb).toString();
     }
 
-    private StringBuilder order(Node node, int h, StringBuilder sb) {
+    private StringBuilder print(Node node, int h, StringBuilder sb) {
 
         if (node == null) {
             return sb.append(placeholder(h) + "null\n");
@@ -120,12 +136,17 @@ public class BST<E extends Comparable<E>> {
         sb.append(placeholder(h) + node.e + "\n");
 
 
-        order(node.left, h + 1, sb);
-        order(node.right, h + 1, sb);
+        print(node.left, h + 1, sb);
+        print(node.right, h + 1, sb);
 
         return sb;
     }
 
+    /**
+     * 遍历时的占位符
+     * @param h
+     * @return
+     */
     private String placeholder(int h) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < h; i++) {
