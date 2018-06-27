@@ -9,6 +9,8 @@ package bst;
 public class BST<E extends Comparable<E>> {
 
 
+    private Node node;
+    private int h;
 
     private class Node{
         private E e;
@@ -18,12 +20,22 @@ public class BST<E extends Comparable<E>> {
         public Node(E e) {
             this.e = e;
         }
+
+        @Override
+        public String toString() {
+
+            return e.toString();
+        }
     }
 
     private Node root;
     private int size;
 
 
+    /**
+     * 添加元素
+     * @param e
+     */
     public void add(E e) {
         root = add(root, e);
     }
@@ -68,6 +80,20 @@ public class BST<E extends Comparable<E>> {
     }
 
 
+    public void preOrder() {
+        preOrder(root);
+    }
+
+    private void preOrder(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        System.out.println(node);
+
+        preOrder(node.left);
+        preOrder(node.right);
+    }
 
     public int size(){
         return size;
@@ -77,4 +103,34 @@ public class BST<E extends Comparable<E>> {
         return size == 0;
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        return order(root, 0, sb).toString();
+    }
+
+    private StringBuilder order(Node node, int h, StringBuilder sb) {
+
+        if (node == null) {
+            return sb.append(placeholder(h) + "null\n");
+        }
+
+        sb.append(placeholder(h) + node.e + "\n");
+
+
+        order(node.left, h + 1, sb);
+        order(node.right, h + 1, sb);
+
+        return sb;
+    }
+
+    private String placeholder(int h) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < h; i++) {
+            builder.append("-");
+        }
+        return builder.toString();
+    }
 }

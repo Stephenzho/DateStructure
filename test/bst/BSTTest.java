@@ -15,21 +15,18 @@ public class BSTTest {
     @Test
     public void test() {
 
-        Random random =  new Random(100);
 
+        Integer[] data = {5,3,6,8,4,2};
 
         BST<Integer> bst = new BST<>();
+        for (int i = 0; i < data.length; i++) {
 
 
-        for (int i = 0; i < 10; i++) {
-            int next = random.nextInt(100);
-            System.out.println(next);
-
-            bst.add(next);
+            bst.add(data[i]);
         }
 
 
-        System.out.println(bst.size());
+        System.out.println(bst);
 
     }
 
