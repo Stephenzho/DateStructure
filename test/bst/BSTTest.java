@@ -2,7 +2,6 @@ package bst;
 
 import org.junit.Test;
 
-import java.util.Random;
 
 /**
  * @author zhoushuyi
@@ -26,11 +25,11 @@ public class BSTTest {
         }
 
 
-        bst.inOrder();
+        bst.removeMin();
+        System.out.println(bst);
 
-        System.out.println("\n");
-
-        bst.postOrder();
+        bst.removeMin();
+        System.out.println(bst);
     }
 
 
