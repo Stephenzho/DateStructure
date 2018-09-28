@@ -1,4 +1,4 @@
-package bst;
+package tree;
 
 import org.junit.Test;
 
@@ -24,12 +24,8 @@ public class BSTTest {
             bst.add(data[i]);
         }
 
+        bst.postOrder();
 
-        bst.removeMin();
-        System.out.println(bst);
-
-        bst.removeMin();
-        System.out.println(bst);
     }
 
 
