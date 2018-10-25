@@ -1,4 +1,4 @@
-package bst;
+package tree;
 
 import java.util.ArrayDeque;
 import java.util.Stack;
@@ -11,8 +11,6 @@ import java.util.Stack;
  */
 public class BST<E extends Comparable<E>> {
 
-    private Node node;
-    private int h;
 
     private class Node{
         private E e;
