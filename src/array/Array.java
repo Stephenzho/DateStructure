@@ -31,12 +31,12 @@ public class Array<T> {
     public T getFirst() {
         return get(0);
     }
-    public void set(int index,T e){
+    public void set(int index, T e){
         if (index < 0 || index >= size) {
             throw new IllegalArgumentException("Get failed. Index is illegal.");
         }
 
-        this.data[index] = e;
+        data[index] = e;
     }
 
     public T remove(final int index) {
@@ -158,7 +158,15 @@ public class Array<T> {
         data = newData;
     }
 
+    public void swap(int i, int j) {
+        if (i < 0 || i >= size || j < 0 || j >= size) {
+            throw new IllegalArgumentException("Index is illegal");
+        }
 
+        T d  = data[i];
+        data[i] = data[j];
+        data[j] = d;
+    }
 
 
 
