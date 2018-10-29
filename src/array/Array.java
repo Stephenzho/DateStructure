@@ -180,6 +180,10 @@ public class Array<T> {
         size = 0;
     }
 
+    public Array(T[] arr) {
+        data = arr;
+    }
+
     public Array() {
         this(10);
     }
