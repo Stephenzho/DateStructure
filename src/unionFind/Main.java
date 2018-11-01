@@ -33,8 +33,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int size =  1000000;
-        int m =     1000000;
+        int size =  10000000;
+        int m =     10000000;
 
         UnionFind uf = new UnionFind(size);
 
