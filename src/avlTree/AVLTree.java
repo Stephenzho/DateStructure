@@ -1,7 +1,5 @@
 package avlTree;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import java.util.ArrayList;
 
 /**
@@ -136,13 +134,20 @@ public class AVLTree<K extends Comparable<K>, V > {
 
         // 计算平衡因子
         int balanceFactor = getBalanceFactor(node);
-        if (Math.abs(balanceFactor) > 1) {
-            System.out.println("该节点平衡因子过大 " + balanceFactor);
-        }
 
+        // LL
         if (balanceFactor > 1 && getBalanceFactor(node.left) >= 0) {
             return rightRotate(node);
+        // RR
         }else if (balanceFactor < -1 && getBalanceFactor(node.right) <= 0){
+            return leftRotate(node);
+        // LR
+        } else if (balanceFactor > 1 && getBalanceFactor(node.left) < 0) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        // RL
+        } else if (balanceFactor < -1 && getBalanceFactor(node.right) > 0) {
+            node.right = rightRotate(node.right);
             return leftRotate(node);
         }
 
@@ -231,21 +236,6 @@ public class AVLTree<K extends Comparable<K>, V > {
         return minimum(node.left);
     }
 
-    // 删除掉以node为根的二分搜索树中的最小节点
-    // 返回删除节点后新的二分搜索树的根
-    private Node removeMin(Node node){
-
-        if(node.left == null){
-            Node rightNode = node.right;
-            node.right = null;
-            size --;
-            return rightNode;
-        }
-
-        node.left = removeMin(node.left);
-        return node;
-    }
-
     // 从二分搜索树中删除键为key的节点
     public V remove(K key){
 
@@ -258,48 +248,78 @@ public class AVLTree<K extends Comparable<K>, V > {
     }
 
     private Node remove(Node node, K key){
-
         if( node == null )
             return null;
 
+        Node retNode;
         if( key.compareTo(node.key) < 0 ){
             node.left = remove(node.left , key);
-            return node;
-        }
-        else if(key.compareTo(node.key) > 0 ){
+            retNode = node;
+        }else if(key.compareTo(node.key) > 0 ){
             node.right = remove(node.right, key);
-            return node;
-        }
-        else{   // key.compareTo(node.key) == 0
+            retNode = node;
+        }else {   // key.compareTo(node.key) == 0
 
             // 待删除节点左子树为空的情况
-            if(node.left == null){
+            if (node.left == null) {
                 Node rightNode = node.right;
                 node.right = null;
-                size --;
-                return rightNode;
-            }
+                size--;
+                retNode = rightNode;
 
-            // 待删除节点右子树为空的情况
-            if(node.right == null){
+                // 待删除节点右子树为空的情况
+            } else if (node.right == null) {
                 Node leftNode = node.left;
                 node.left = null;
-                size --;
-                return leftNode;
+                size--;
+                retNode = leftNode;
+            } else {
+                /*待删除节点左右子树均不为空的情况
+                  找到比待删除节点大的最小节点, 即待删除节点右子树的最小节点
+                  用这个节点顶替待删除节点的位置
+                 */
+                Node successor = minimum(node.right);
+                successor.right = remove(node.right, successor.key);
+                successor.left = node.left;
+
+                node.left = node.right = null;
+
+                retNode = successor;
             }
-
-            // 待删除节点左右子树均不为空的情况
-
-            // 找到比待删除节点大的最小节点, 即待删除节点右子树的最小节点
-            // 用这个节点顶替待删除节点的位置
-            Node successor = minimum(node.right);
-            successor.right = removeMin(node.right);
-            successor.left = node.left;
-
-            node.left = node.right = null;
-
-            return successor;
         }
+        if (retNode == null) {
+            return null;
+        }
+
+        // 更新height
+        retNode.height = 1 + Math.max(getHeight(retNode.left), getHeight(retNode.right));
+
+        // 计算平衡因子
+        int balanceFactor = getBalanceFactor(retNode);
+
+        // 平衡维护
+        // LL
+        if (balanceFactor > 1 && getBalanceFactor(retNode.left) >= 0)
+            return rightRotate(retNode);
+
+        // RR
+        if (balanceFactor < -1 && getBalanceFactor(retNode.right) <= 0)
+            return leftRotate(retNode);
+
+        // LR
+        if (balanceFactor > 1 && getBalanceFactor(retNode.left) < 0) {
+            retNode.left = leftRotate(retNode.left);
+            return rightRotate(retNode);
+        }
+
+        // RL
+        if (balanceFactor < -1 && getBalanceFactor(retNode.right) > 0) {
+            retNode.right = rightRotate(retNode.right);
+            return leftRotate(retNode);
+        }
+
+        return retNode;
+
     }
 
     public static void main(String[] args){
@@ -326,6 +346,12 @@ public class AVLTree<K extends Comparable<K>, V > {
             System.out.println(map.isBalance());
 
             System.out.println(map.isBST());
+
+            for(String word: words){
+                map.remove(word);
+                if(!map.isBST() || !map.isBalance())
+                    throw new RuntimeException();
+            }
         }
 
         System.out.println();

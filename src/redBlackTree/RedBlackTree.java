@@ -1,35 +1,38 @@
-package tree;
+package redBlackTree;
 
 import avlTree.FileOperation;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.ArrayList;
 
 /**
- * 二分搜索树
- *
  * @author zhoushuyi
- * @since 2018/6/24
+ * @since 2018/11/3
  */
-public class BST<K extends Comparable<K>,V> {
+public class RedBlackTree<K extends Comparable<K>,V> {
 
+    private static final boolean RED = true;
+    private static final boolean BLACK = false;
+
+    private Node root;
+    private int size;
 
     private class Node{
         public K key;
         public V value;
         public Node left, right;
+        public boolean color;
 
         public Node(K key, V value){
             this.key = key;
             this.value = value;
             left = null;
             right = null;
+            color = RED;
         }
     }
 
-    private Node root;
-    private int size;
-
-    public BST(){
+    public RedBlackTree(){
         root = null;
         size = 0;
     }
@@ -42,15 +45,62 @@ public class BST<K extends Comparable<K>,V> {
         return size == 0;
     }
 
-    // 向二分搜索树中添加新的元素(key, value)
-    public void add(K key, V value){
-        root = add(root, key, value);
+    private boolean isRed(Node node) {
+        if (node == null) {
+            return BLACK;
+        }
+        return node.color;
     }
 
-    // 向以node为根的二分搜索树中插入元素(key, value)，递归算法
-    // 返回插入新节点后二分搜索树的根
-    private Node add(Node node, K key, V value){
+    /**
+     * 左旋转
+     * @param node
+     * @return
+     */
+    private Node leftRotate(Node node) {
+        // 交换位置
+        Node x = node.right;
+        node.right = x.left;
+        x.left = node;
+        // 顶点更换颜色，左节点变为红色
+        x.color = node.color;
+        node.color = RED;
+        return x;
+    }
 
+    private Node rightRotate(Node node) {
+        Node x = node.left;
+        node.left = x.right;
+        x.right = node;
+
+        x.color = node.color;
+        node.color = RED;
+        return x;
+    }
+
+    /**
+     * 颜色反转
+     * @param node
+     */
+    private void flipColors(Node node) {
+        node.color = RED;
+        node.left.color = BLACK;
+        node.right.color = BLACK;
+    }
+
+    /**
+     * 添加新的元素
+     * @param key
+     * @param value
+     */
+    public void add(K key, V value){
+        root = add(root, key, value);
+        root.color = BLACK;
+    }
+
+    // 向以node为根的树中插入元素(key, value)，递归算法
+    // 返回插入新节点后树的根
+    private Node add(Node node, K key, V value){
         if(node == null){
             size ++;
             return new Node(key, value);
@@ -62,6 +112,19 @@ public class BST<K extends Comparable<K>,V> {
             node.right = add(node.right, key, value);
         else // key.compareTo(node.key) == 0
             node.value = value;
+
+
+        if (isRed(node.right) && !isRed(node.left)) {
+            node = leftRotate(node);
+        }
+
+        if (isRed(node.left) && isRed(node.left.left)) {
+            rightRotate(node);
+        }
+
+        if (isRed(node.left) && isRed(node.right)) {
+            flipColors(node);
+        }
 
         return node;
     }
@@ -184,7 +247,7 @@ public class BST<K extends Comparable<K>,V> {
         if(FileOperation.readFile("pride-and-prejudice.txt", words)) {
             System.out.println("Total words: " + words.size());
 
-            BST<String, Integer> map = new BST<>();
+            RedBlackTree<String, Integer> map = new RedBlackTree<>();
             for (String word : words) {
                 if (map.contains(word))
                     map.set(word, map.get(word) + 1);
