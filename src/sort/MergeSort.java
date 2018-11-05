@@ -18,17 +18,37 @@ public class MergeSort {
         mergeSort(arr, 0, arr.length - 1);
     }
 
-    private static void mergeSort(int[] arr, int i, int j) {
-        if (i >= j) {
+    private static void mergeSort(int[] arr, int l, int r) {
+        // 小于15个用插入排序更优
+        if (r - l <= 15 && r - l > 0) {
+            insertionSort(arr, l, r);
             return;
         }
 
-        int m = (i + j) / 2;
-        mergeSort(arr, i, m);
-        mergeSort(arr, m + 1, j);
+        int m = (l + r) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
 
         // 将两个数组合并
-        merge(arr, i, m, j);
+        if (arr[m] > arr[m + 1]) {
+            merge(arr, l, m, r);
+        }
+    }
+
+    /**
+     * 自底向上排序
+     * @param arr
+     * @param l
+     * @param r
+     */
+    public static void mergeSortBU(int[] arr, int l, int r) {
+        int n = arr.length;
+
+        for( int sz = 1; sz < n ; sz += sz )
+            for( int i = 0 ; i < n - sz ; i += sz+sz )
+                // 对于arr[mid] <= arr[mid+1]的情况,不进行merge
+                if( arr[i+sz-1] > arr[i+sz]  )
+                    merge(arr, i, i+sz-1, Math.min(i+sz+sz-1,n-1) );
     }
 
     /**
@@ -60,6 +80,29 @@ public class MergeSort {
                 j ++;
             }
         }
+    }
+
+    /**
+     * 用于优化的插入排序
+     * @param arr
+     * @param l
+     * @param r
+     */
+    private static void insertionSort(int[] arr, int l, int r) {
+
+        for (int i = l+1; i <= r; i++) {
+            for (int j = i; j > l; j--) {
+                if (arr[j] < arr[j - 1]) {
+                    swap(arr, j, j - 1);
+                }
+            }
+        }
+    }
+
+    private static void swap(int[] arr, int i, int j) {
+        int n = arr[i];
+        arr[i] = arr[j];
+        arr[j] = n;
     }
 
 
